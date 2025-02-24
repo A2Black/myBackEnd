@@ -11,7 +11,7 @@ exports.register = (req,res) =>{
 			message:'账号或密码不能为空!'
 		})
 	}
-	// 第二部,判断前端传送过来的账号是否已经存在于数据表中
+	// 第二步,判断前端传送过来的账号是否已经存在于数据表中
 	// 需要用到mysql的select语句
 	const sql = 'select * from users where account = ?'
 	// 第一个参数sql1是执行第16行语句,第二个参数是前端传进来的,第三个是处理函数,用于处理结果,err是返回错误信息的参数,results是返回处理结果的参数
