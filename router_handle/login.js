@@ -21,7 +21,7 @@ exports.register = (req,res) =>{
 	// 第二步,判断前端传送过来的账号是否已经存在于数据表中
 	// 需要用到mysql的select语句
 	const sql = 'select * from users where account = ?'
-	// 第一个参数sql1是执行第16行语句,第二个参数是前端传进来的,第三个是处理函数,用于处理结果,err是返回错误信息的参数,results是返回处理结果的参数
+	// 第一个参数sql1是执行第23行语句,第二个参数是前端传进来的,第三个是处理函数,用于处理结果,err是返回错误信息的参数,results是返回处理结果的参数
 	db.query(sql,reginfo.account,(err,results)=>{
 		if(results.length>0){
 			return res.send({
@@ -38,7 +38,7 @@ exports.register = (req,res) =>{
 		// 注册身份
 		const identity = '用户'
 		// 创建时间
-		const creat_time = new Data()
+		const creat_time = new Date()
 		db.query(sql1,{
 			account:reginfo.account,
 			password:reginfo.password,
@@ -77,7 +77,7 @@ exports.login = (req,res) =>{
 		// 第二步，登录没有失败，对前端传过来的密码进行解密
 		const compareResult = bcrypt.compareSync(loginfo.password,results[0].password)
 		if(!compareResult ){
-			return res.cc('登陆失败')
+			return res.cc('登录失败')
 		}
 		// 第三步，判定账号是否冻结
 		if(results[0].status == 1){
@@ -96,11 +96,11 @@ exports.login = (req,res) =>{
 		const tokenStr = jwt.sign(user,jwtconfig.jwtSecretKey,{
 			expiresIn:'7h'
 		})
-		res.semd({
+		res.send({
 			results:results[0],
 			status:0,
 			message:'登录成功',
-			token:'Bearer' + tokenStr,
+			token:'Bearer ' + tokenStr,
 		})
 	})
 }
