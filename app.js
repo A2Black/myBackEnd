@@ -12,8 +12,8 @@ app.use(cors())
 
 // Multer 是一个 node.js 中间件，用于处理 multipart/form-data 类型的表单数据，它主要用于上传文件。
 const multer = require("multer");
-// 新建upload文件用于存放图片
-const upload = multer({ dest: './public/upload' })
+// 在server服务端下新建一个public文件，在public文件下新建upload文件用于存放图片，新建upload文件用于存放图片
+const upload = multer({dest: './public/upload'})
 // 使用这个中间件
 app.use(upload.any())
 // 静态托管
@@ -43,21 +43,30 @@ app.use((req,res,next)=>{
 
 //导入jwt配置
 const jwtconfig = require('./jwt_config/index.js')
-const {expressjwt:jwt} = require('express-jwt')
-app.use(jwt({
-	secret:jwtconfig.jwtSecretKey,
-	algorithms:['HS256']   //指定签名算法为HS256
-}).unless({
-	path:[/^\/api\//]      //排除需要免认证的路由
-}))
+//const {expressjwt:jwt} = require('express-jwt')
+// app.use(jwt({
+// 	secret:jwtconfig.jwtSecretKey,
+// 	algorithms:['HS256']   //指定签名算法为HS256
+// }).unless({
+// 	path:[/^\/api\//]      //排除需要免认证的路由
+// }))
 
 const loginRouter = require('./router/login.js')
+const Joi = require('joi')
 app.use('/api',loginRouter)
+const userRouter = require('./router/userinfo.js')
+app.use('/user',userRouter)
 
-// 对不符合joi规则的情况报错
-app.use((err,req,res,next)=>{
-	if(err instanceof Joi.ValidationError) return res.cc(err)
-})
+
+//对不符合joi规则的情况报错
+// app.use((err,req,res,next)=>{
+// 	if(err instanceof Joi.ValidationError) {
+// 		res.send({
+// 			status: 1,
+// 			message:'输入的数据不符合验证规则'
+// 		})
+// 	}
+// })
 
 // 绑定和侦听指定的主机和端口
 app.listen(3007, () => {
