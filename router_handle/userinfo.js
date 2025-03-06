@@ -54,3 +54,89 @@ exports.bindAccount = (req,res)=>{
 		}
 	})
 }
+
+// 获取用户信息   根据接受参数id
+exports.getUserInfo = (req,res)=>{
+	const sql = 'select * from users where id = ?'     //是从users表里面查找符合条件的信息
+	db.query(sql,req.body.id,(err,result)=>{
+		if(err) return res.cc(err)
+		res.send(result)
+	})
+}
+
+// 修改用户姓名 接收参数 id， name
+exports.changeName = (req,res)=>{
+	// 解构赋值
+	const {
+		id,
+		name
+	} = req.body
+	const sql = 'update users set name = ? where id = ?'
+	db.query(sql,[name,id],(err,result)=>{
+		if(err) return res.cc(err)
+		res.send({
+			status:0,
+			message:"修改成功"
+		})
+	})
+}
+
+// 修改用户性别    接收参数为id，sex
+exports.changeSex = (req,res)=>{
+	// 解构赋值
+	const {
+		id,
+		sex
+	} = req.body
+	const sql = 'update users set sex = ? where id = ?'
+	db.query(sql,[sex,id],(err,result)=>{
+		if(err) return res.cc(err)
+		res.send({
+			status:0,
+			message:"修改成功"
+		})
+	})
+}
+
+// 修改用户邮箱 接收参数为id，email
+exports.changeEmail = (req,res)=>{
+	// 解构赋值
+	const {
+		id,
+		email
+	} = req.body
+	const sql = 'update users set email = ? where id = ?'
+	db.query(sql,[email,id],(err,result)=>{
+		if(err) return res.cc(err)
+		res.send({
+			status:0,
+			message:"修改成功"
+		})
+	})
+}
+
+// 修改密码 三个参数：旧密码 oldPassword 新密码 newPasswo 通过用户id查找旧密码
+exports.changePassword = (req,res)=>{
+	const sql = 'select password from users where id = ?'
+	db.query(sql,req.body.id,(err,result)=>{
+		if(err) return res.cc(err);
+		//bcrypt 使用这个中间件的比较方法
+		const compareResult = bcrypt.compareSync(req.body.oldPassword,result[0].password);
+		if(!compareResult){
+			res.send({
+				status:1,
+				message:"旧密码错误"
+			})
+		}
+		// 加密新密码
+		req.body.newPassword = bcrypt.hashSync(req.body.newPassword,10)
+		const sql1 = 'update users set password = ? where id = ?'
+		db.query(sql1,[req.body.newPassword,req.body.id],(err,result)=>{
+			if(err) return res.cc(err);
+			res.send({
+				status:0,
+				message:"修改成功"
+			})
+		})
+	})
+}
