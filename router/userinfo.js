@@ -8,15 +8,17 @@ const expressJoi = require('@escook/express-joi')
 // 导入userinfo的路由处理模块
 const userinfoHandler = require('../router_handle/userinfo.js')
 
-// 导入name和email的验证规则
+// 导入name和email、passwo的验证规则
 const {
-    name_limit,email_limit
+    name_limit,email_limit,password_limit
 } = require('../limit/user.js')
 
 // 上传头像
 router.post('/uploadAvatar',userinfoHandler.uploadAvatar)
 // 绑定账号
 router.post('/bindAccount',userinfoHandler.bindAccount)
+// 修改用户密码
+router.post('/changePassword',expressJoi(password_limit),userinfoHandler.changePassword)
 // 获取用户信息
 router.post('/getUserInfo',userinfoHandler.getUserInfo)
 // 修改用户姓名
