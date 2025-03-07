@@ -140,3 +140,42 @@ exports.changePassword = (req,res)=>{
 		})
 	})
 }
+
+// 验证账户和邮箱是否一致 email account
+exports.verifyAccountAndEmail = (req,res)=>{
+	const {
+		account,
+		email
+	} = req.body;
+	const sql = 'select * from users where account = ?';
+	db.query(sql,account,(err,result)=>{
+		if(err) return res.cc(err);
+		// res.send(result[0])
+		if(email === result[0].email){
+			res.send({
+				status:0,
+				message:"查询成功",
+				id:result[0].id,
+			})
+		}else{
+			res.send({
+				status:1,
+				message:"查询失败"
+			})
+		}
+	})
+}
+
+// 登录页面修改密码 id newPassword
+exports.changePasswordInLogin = (req,res) => {
+	req.body.newPassword = bcrypt.hashSync(req.body.newPassword,10)
+	const user = req.body;
+	const sql = 'update users set password = ? where id = ?';
+	db.query(sql,[user.newPassword,user.id],(err,result)=>{
+		if(err) return res.cc(err);
+		res.send({
+			status:0,
+			message:"密码修改成功"
+		})
+	})
+}
