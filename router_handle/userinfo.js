@@ -60,7 +60,8 @@ exports.getUserInfo = (req,res)=>{
 	const sql = 'select * from users where id = ?'     //是从users表里面查找符合条件的信息
 	db.query(sql,req.body.id,(err,result)=>{
 		if(err) return res.cc(err)
-		res.send(result)
+		result[0].password = ''
+		res.send(result[0])
 	})
 }
 

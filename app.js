@@ -42,8 +42,8 @@ app.use((req,res,next)=>{
 })
 
 //导入jwt配置
-const jwtconfig = require('./jwt_config/index.js')
-//const {expressjwt:jwt} = require('express-jwt')
+// const jwtconfig = require('./jwt_config/index.js')
+// const {expressjwt:jwt} = require('express-jwt')
 // app.use(jwt({
 // 	secret:jwtconfig.jwtSecretKey,
 // 	algorithms:['HS256']   //指定签名算法为HS256
@@ -59,14 +59,14 @@ app.use('/user',userRouter)
 
 
 //对不符合joi规则的情况报错
-// app.use((err,req,res,next)=>{
-// 	if(err instanceof Joi.ValidationError) {
-// 		res.send({
-// 			status: 1,
-// 			message:'输入的数据不符合验证规则'
-// 		})
-// 	}
-// })
+app.use((err,req,res,next)=>{
+	if(err instanceof Joi.ValidationError) {
+		res.send({
+			status: 1,
+			message:'输入的数据不符合验证规则'
+		})
+	}
+})
 
 // 绑定和侦听指定的主机和端口
 app.listen(3007, () => {

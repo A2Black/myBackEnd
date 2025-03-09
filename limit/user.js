@@ -40,3 +40,11 @@ exports.email_limit = {
         email
     }
 }
+
+exports.fogetPassword_limit = {
+    //表示对req.body里面的数据进行验证
+    body:{
+        id,
+		newPassword
+    }
+}
