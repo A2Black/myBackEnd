@@ -1,6 +1,7 @@
 // 登录注册模块路由
 // 导入express框架
 const express = require('express')
+// 对数据进行验证
 const Joi = require('joi')
 // 使用express框架的路由
 const router = express.Router()
