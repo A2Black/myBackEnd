@@ -34,5 +34,13 @@ router.post('/verifyAccountAndEmail',userinfoHandler.verifyAccountAndEmail)
 // 登陆页面修改密码
 router.post('/changePasswordInLogin',expressJoi(fogetPassword_limit),userinfoHandler.changePasswordInLogin)
 
+// ...............................................................用户管理（增删改查）..................................................................................
+// 添加管理员
+router.post('/createAdmin',userinfoHandler.createAdmin)
+// 获取管理员列表 getAdminList
+router.post('/getAdminList',userinfoHandler.getAdminList)
+// 编辑管理员信息 editAdminInfo
+router.post('/editAdminInfo',userinfoHandler.editAdminInfo)
+
 // 向外暴露路由
 module.exports = router

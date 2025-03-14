@@ -4,6 +4,7 @@ const db = require('../db/index.js')
 const bcrypt = require('bcryptjs')
 // 导入node.js的crypto库用于生成uuid
 const crypto = require('crypto')
+const { resourceLimits } = require('worker_threads')
 // 导入fs用于处理文件
 fs = require('fs')
 
@@ -177,6 +178,108 @@ exports.changePasswordInLogin = (req,res) => {
 		res.send({
 			status:0,
 			message:"密码修改成功"
+		})
+	})
+}
+
+
+
+
+// ...............................................................用户管理（增删改查）..................................................................................
+// 添加管理员
+exports.createAdmin = (req,res) => {
+	// 需要前端传进来的参数
+	const {
+		account,
+		password,
+		name,
+		sex,
+		department,
+		email,
+		identity,
+	} = req.body
+	// 判断账号是否存在于数据库中
+	const sql = 'select * from users where account = ?'
+	db.query(sql,account,(err,results)=>{
+		// 判断账号是否存在
+		if(results.length>0){
+			return res.send({
+				status:1,
+				message:'账号已存在'
+			})
+		}
+		// 如果账号不存在就创建账号，并对密码进行加密
+		let password = bcrypt.hashSync(password,10)
+		// 第四步,把账号和密码插入到users表里面
+		const sql1 = 'insert into users set ?'
+		// 创建时间
+		const creat_time = new Date()
+		db.query(sql1,{
+			account,
+			password,
+			name,
+			sex,
+			department,
+			email,
+			identity,
+			// 创建时间
+			creat_time,
+			// 初始未冻结状态为0
+			status:0
+		},(err,results)=>{
+			// 第一个情况,如果插入失败
+			// affectedRows为影响的行数,如果插入失败,那就没有影响到users表的行数,也就是行数不唯一
+			if(results.affectedRows !== 1){
+				return res.send({
+					status:1,
+					message:'添加管理员失败！'
+				})
+			}
+			res.send({
+				status:0,
+				message:'添加管理员成功！'
+			})
+		})
+	})
+}
+
+// 获取管理员列表  参数是前端传进来的identity
+exports.getAdminList = (req,res) => {
+	const sql = 'select * from users where identity = ?'
+	db.query(sql,req.body.identity,(err,results)=>{
+		if(err) return res.cc(err);
+		res.send(results)
+	})
+}
+
+// 编辑管理员账号信息
+exports.editAdminInfo = (req,res) => {
+	// 需要从前端传进来的参数
+	const {
+		id,
+		name,
+		sex,
+		email,
+		department
+	} = req.body 
+	// 更新时间
+	const date = new Date()
+	// 更新内容
+	const updateContent = {
+		id,
+		name,
+		sex,
+		email,
+		department,
+		// 数值是date
+		update_time:date,
+	}
+	const sql = 'update users set ? where id = ?'
+	db.query(sql,[updateContent,updateContent.id],(err,results)=>{
+		if(err) return res.cc(err);
+		res.send({
+			status:0,
+			message:"修改管理员信息成功"
 		})
 	})
 }
