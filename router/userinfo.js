@@ -41,6 +41,19 @@ router.post('/createAdmin',userinfoHandler.createAdmin)
 router.post('/getAdminList',userinfoHandler.getAdminList)
 // 编辑管理员信息 editAdminInfo
 router.post('/editAdminInfo',userinfoHandler.editAdminInfo)
-
+// 降级管理员身份 changeAdminToUser
+router.post('/changeAdminToUser',userinfoHandler.changeAdminToUser)
+// 对普通用户赋权 升级成为管理员 changeUserToAdmin
+router.post('/changeUserToAdmin',userinfoHandler.changeUserToAdmin)
+// 通过账号对用户进行搜索 searchUser
+router.post('/searchUser',userinfoHandler.searchUser)
+// 冻结用户
+router.post('/banUser',userinfoHandler.banUser)
+// 解冻用户 hotUser
+router.post('/hotUser',userinfoHandler.hotUser)
+// 获取冻结用户列表 getBanList
+router.post('/getBanList',userinfoHandler.getBanList)
+// 删除用户 deleteUser
+router.post('/deleteUser',userinfoHandler.deleteUser)
 // 向外暴露路由
 module.exports = router

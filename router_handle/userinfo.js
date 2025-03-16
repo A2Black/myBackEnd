@@ -200,23 +200,23 @@ exports.createAdmin = (req,res) => {
 	} = req.body
 	// 判断账号是否存在于数据库中
 	const sql = 'select * from users where account = ?'
-	db.query(sql,account,(err,results)=>{
+	db.query(sql,account,(err,result)=>{
 		// 判断账号是否存在
-		if(results.length>0){
+		if(result.length>0){
 			return res.send({
 				status:1,
 				message:'账号已存在'
 			})
 		}
 		// 如果账号不存在就创建账号，并对密码进行加密
-		let password = bcrypt.hashSync(password,10)
+		const hashpassword = bcrypt.hashSync(password,10)
 		// 第四步,把账号和密码插入到users表里面
 		const sql1 = 'insert into users set ?'
 		// 创建时间
 		const creat_time = new Date()
 		db.query(sql1,{
 			account,
-			password,
+			password:hashpassword,
 			name,
 			sex,
 			department,
@@ -226,10 +226,10 @@ exports.createAdmin = (req,res) => {
 			creat_time,
 			// 初始未冻结状态为0
 			status:0
-		},(err,results)=>{
+		},(err,result)=>{
 			// 第一个情况,如果插入失败
 			// affectedRows为影响的行数,如果插入失败,那就没有影响到users表的行数,也就是行数不唯一
-			if(results.affectedRows !== 1){
+			if(result.affectedRows !== 1){
 				return res.send({
 					status:1,
 					message:'添加管理员失败！'
@@ -246,9 +246,9 @@ exports.createAdmin = (req,res) => {
 // 获取管理员列表  参数是前端传进来的identity
 exports.getAdminList = (req,res) => {
 	const sql = 'select * from users where identity = ?'
-	db.query(sql,req.body.identity,(err,results)=>{
+	db.query(sql,req.body.identity,(err,result)=>{
 		if(err) return res.cc(err);
-		res.send(results)
+		res.send(result)
 	})
 }
 
@@ -264,7 +264,7 @@ exports.editAdminInfo = (req,res) => {
 	} = req.body 
 	// 更新时间
 	const date = new Date()
-	// 更新内容
+	// 更新的内容
 	const updateContent = {
 		id,
 		name,
@@ -275,11 +275,96 @@ exports.editAdminInfo = (req,res) => {
 		update_time:date,
 	}
 	const sql = 'update users set ? where id = ?'
-	db.query(sql,[updateContent,updateContent.id],(err,results)=>{
+	db.query(sql,[updateContent,updateContent.id],(err,result)=>{
 		if(err) return res.cc(err);
 		res.send({
 			status:0,
-			message:"修改管理员信息成功"
+			message:"修改管理员信息成功！"
+		})
+	})
+}
+
+// 对管理员取消赋权  降级成为普通用户 参数id
+exports.changeAdminToUser = (req,res) => {
+	const identity = "用户"
+	const sql = 'update users set identity = ? where id = ?'
+	db.query(sql,[identity,req.body.id],(err,result)=>{
+		if(err) return res.cc(err);
+		res.send({
+			status:0,
+			message:"管理员降级成功！"
+		})
+	})
+}
+
+// 对普通用户赋权 升级成为管理员 参数id identity
+exports.changeUserToAdmin = (req,res) => {
+	const sql = 'update users set identity = ? where id = ?'
+	db.query(sql,[req.body.identity,req.body.id],(err,result)=>{
+		if(err) return res.cc(err);
+		res.send({
+			status:0,
+			message:"对普通用户赋权成功！"
+		})
+	})
+}
+
+// 通过账号对用户进行搜索  参数为account
+exports.searchUser = (req,res) => {
+	const sql = 'select * from users where account = ?'
+	db.query(sql,req.body.account,(err,result)=>{
+		if(err) return res.cc(err);
+		res.send(result)
+	})
+}
+
+// 冻结用户 参数id 把status置为1 
+exports.banUser = (req,res) => {
+	const status = 1
+	const sql = 'update users set status = ? where id = ?'
+	db.query(sql,[status,req.body.id],(err,result)=>{
+		if(err) return res.cc(err);
+		res.send({
+			status:0,
+			message:"冻结成功！"
+		})
+	})
+}
+
+// 解冻用户 参数id 把status置为0
+exports.hotUser = (req,res) => {
+	const status = 0
+	const sql = 'update users set status = ? where id = ?'
+	db.query(sql,[status,req.body.id],(err,result)=>{
+		if(err) return res.cc(err);
+		res.send({
+			status:0,
+			message:"解冻成功！"
+		})
+	})
+}
+
+// 获取冻结用户列表
+exports.getBanList = (req,res) => {
+	const sql = 'select * from users where status = "1"'
+	db.query(sql,(err,result)=>{
+		if(err) return res.cc(err);
+		res.send(result)
+	})
+}
+
+// 删除用户 参数id,account
+exports.deleteUser = (req,res) => {
+	const sql = 'delete from users where id = ?'
+	db.query(sql, req.body.id, (err,result)=>{
+		if(err) return res.cc(err);
+		const sql1 = 'delete from image where account = ?'
+		db.query(sql1,req.body.account,(err,result)=>{
+			if(err) return res.cc(err);
+			res.send({
+				status:0,
+				message:"删除用户成功！"
+			})
 		})
 	})
 }
