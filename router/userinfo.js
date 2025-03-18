@@ -47,6 +47,8 @@ router.post('/changeAdminToUser',userinfoHandler.changeAdminToUser)
 router.post('/changeUserToAdmin',userinfoHandler.changeUserToAdmin)
 // 通过账号对用户进行搜索 searchUser
 router.post('/searchUser',userinfoHandler.searchUser)
+// 通过部门对用户进行搜索 searchUserByDepartment
+router.post('/searchUserByDepartment',userinfoHandler.searchUserByDepartment)
 // 冻结用户
 router.post('/banUser',userinfoHandler.banUser)
 // 解冻用户 hotUser
@@ -55,5 +57,11 @@ router.post('/hotUser',userinfoHandler.hotUser)
 router.post('/getBanList',userinfoHandler.getBanList)
 // 删除用户 deleteUser
 router.post('/deleteUser',userinfoHandler.deleteUser)
+// 获取对应身份的一个总人数 getAdminListLength
+router.post('/getAdminListLength',userinfoHandler.getAdminListLength)
+// 监听换页并返回数据 returnListData
+router.post('/returnListData',userinfoHandler.returnListData)
+
+
 // 向外暴露路由
 module.exports = router

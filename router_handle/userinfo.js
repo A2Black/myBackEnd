@@ -248,6 +248,12 @@ exports.getAdminList = (req,res) => {
 	const sql = 'select * from users where identity = ?'
 	db.query(sql,req.body.identity,(err,result)=>{
 		if(err) return res.cc(err);
+		result.forEach((e)=>{
+			e.password = '',
+			e.creat_time = '',
+			e.image_url = '',
+			e.status = ''
+		})
 		res.send(result)
 	})
 }
@@ -314,6 +320,27 @@ exports.searchUser = (req,res) => {
 	const sql = 'select * from users where account = ?'
 	db.query(sql,req.body.account,(err,result)=>{
 		if(err) return res.cc(err);
+		result.forEach((e)=>{
+			e.password = '',
+			e.creat_time = '',
+			e.image_url = '',
+			e.status = ''
+		})
+		res.send(result)
+	})
+}
+
+// 通过选择部门对用户进行搜索  参数为department
+exports.searchUserByDepartment = (req,res) => {
+	const sql = 'select * from users where department = ?'
+	db.query(sql,req.body.department,(err,result)=>{
+		if(err) return res.cc(err);
+		result.forEach((e)=>{
+			e.password = '',
+			e.creat_time = '',
+			e.image_url = '',
+			e.status = ''
+		})
 		res.send(result)
 	})
 }
@@ -366,5 +393,25 @@ exports.deleteUser = (req,res) => {
 				message:"删除用户成功！"
 			})
 		})
+	})
+}
+
+// 获取对应身份的一个总人数 参数identity
+exports.getAdminListLength = (req,res) => {
+	const sql = 'select * from users where identity = ?'
+	db.query(sql,req.body.identity,(err,result)=> {
+		if(err) return res.cc(err)
+		res.send({
+			length:result.length
+		})
+	})
+}
+
+// 监听换页并返回数据 pager identity
+exports.returnListData = (req,res) => {
+	const sql = ` select * from users where identity = ? limit 1 offset ${req.body.pager} `
+	db.query(sql, req.body.identity, (err,result)=> {
+		if(err) return res.cc(err)
+		res.send(result)
 	})
 }
