@@ -305,8 +305,9 @@ exports.changeAdminToUser = (req,res) => {
 
 // 对普通用户赋权 升级成为管理员 参数id identity
 exports.changeUserToAdmin = (req,res) => {
-	const sql = 'update users set identity = ? where id = ?'
-	db.query(sql,[req.body.identity,req.body.id],(err,result)=>{
+	const date = new Date()
+	const sql = 'update users set identity = ?,update_time = ? where id = ?'
+	db.query(sql,[req.body.identity, date, req.body.id],(err,result)=>{
 		if(err) return res.cc(err);
 		res.send({
 			status:0,
@@ -332,14 +333,12 @@ exports.searchUser = (req,res) => {
 
 // 通过选择部门对用户进行搜索  参数为department
 exports.searchUserByDepartment = (req,res) => {
-	const sql = 'select * from users where department = ?'
+	const sql = 'select * from users where department = ? and identity = "用户"'
 	db.query(sql,req.body.department,(err,result)=>{
 		if(err) return res.cc(err);
-		result.forEach((e)=>{
-			e.password = '',
-			e.creat_time = '',
-			e.image_url = '',
-			e.status = ''
+		result.forEach((e) => {
+			e.password = ''
+			e.image_url = ''
 		})
 		res.send(result)
 	})
@@ -409,7 +408,7 @@ exports.getAdminListLength = (req,res) => {
 
 // 监听换页并返回数据 pager identity
 exports.returnListData = (req,res) => {
-	const sql = ` select * from users where identity = ? limit 1 offset ${req.body.pager} `
+	const sql = ` select * from users where identity = ? limit 10 offset ${req.body.pager} `
 	db.query(sql, req.body.identity, (err,result)=> {
 		if(err) return res.cc(err)
 		res.send(result)
