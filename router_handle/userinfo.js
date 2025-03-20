@@ -408,7 +408,9 @@ exports.getAdminListLength = (req,res) => {
 
 // 监听换页并返回数据 pager identity
 exports.returnListData = (req,res) => {
-	const sql = ` select * from users where identity = ? limit 10 offset ${req.body.pager} `
+	const number = (req.body.pager-1)*10
+	// limit为要拿到的数据 offset为要跳过的数据
+	const sql = `select * from users where identity = ? limit 10 offset ${number}`
 	db.query(sql, req.body.identity, (err,result)=> {
 		if(err) return res.cc(err)
 		res.send(result)
