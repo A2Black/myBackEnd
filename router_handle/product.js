@@ -145,17 +145,17 @@ exports.applyOutProduct = (req, res) => {
 	} = req.body
 	const product_apply_time = new Date()
 	const product_out_price = product_out_number * 1 * product_single_price
-	const sql0 = 'select * from product where product_out_id = ?'
-	db.query(sql0, product_out_id, (err, result) => {
+	const sql = 'SELECT * FROM product WHERE product_out_id = ? AND product_out_status != "否决"'
+	db.query(sql, product_out_id, (err, result) => {
 		if (result.length > 0) {
 			res.send({
 				status: 1,
 				message: '申请出库编号已存在'
 			})
 		}else{
-			const sql =
+			const sql1 =
 				'update product set product_out_status = ?,product_out_id=?,product_out_number=?,product_out_price=?,product_out_apply_person=?,apply_memo=?,product_apply_time= ? where id = ?'
-			db.query(sql, [
+			db.query(sql1, [
 				product_out_status,
 				product_out_id,
 				product_out_number,
@@ -203,6 +203,7 @@ exports.auditProduct = (req, res) => {
 	const {
 		id,
 		product_out_id,
+		product_name,
 		product_out_status,
 		audit_memo,
 		product_out_price,
@@ -222,8 +223,9 @@ exports.auditProduct = (req, res) => {
 		// 新的库存总价
 		const product_all_price = newWarehouseNumber * product_single_price
 		const sql = 'insert into outproduct set ?'
-		db.query(sql, [
+		db.query(sql, {
 			product_out_id,
+			product_name,
 			product_out_number,
 			product_out_price,
 			product_out_audit_person,
@@ -231,7 +233,7 @@ exports.auditProduct = (req, res) => {
 			product_audit_time,
 			product_apply_time,
 			audit_memo
-		], (err, result) => {
+		}, (err, result) => {
 			if (err) return res.cc(err)
 			const sql1 =
 				'update product set product_in_warehouse_number = ?,product_all_price = ?,product_out_status = NULL ,product_out_id = NULL,product_out_number =NULL,product_out_apply_person=NULL,apply_memo =NULL,product_out_price =NULL,product_apply_time = NULL where id = ?'
