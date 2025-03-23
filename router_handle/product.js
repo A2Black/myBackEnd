@@ -330,8 +330,8 @@ exports.getOutProductLength = (req, res) => {
 	})
 }
 
-// 监听换页返回数据  产品页面
-// limit 10 为我们要拿到数据 offset 我们跳过多少条数据
+// 监听换页返回数据  产品页面   参数 pager
+// limit 10 为我们要拿到数据 offset 我们跳过多少条数据  
 exports.returnProductListData = (req, res) => {
 	const number = (req.body.pager - 1) * 10
 	const sql =
