@@ -62,6 +62,8 @@ const productRouter = require('./router/product.js')
 app.use('/pro',productRouter)
 const messageRouter = require('./router/message.js')
 app.use('/msg',messageRouter)
+const fileRouter = require('./router/file.js')
+app.use('/file',fileRouter)
 
 //对不符合joi规则的情况报错
 app.use((err,req,res,next)=>{

@@ -279,14 +279,14 @@ exports.deleteMessage = (req, res) => {
 		if (err) return res.cc(err)
 		res.send({
 			status: 0,
-			message: '删除消息成功'
+			message: '永久删除消息成功'
 		})
 	})
 }
 
 // 获取公司公告总数
 exports.getCompanyMessageLength = (req, res) => {
-	const sql = 'select * from message where message_category ="公司公告"'
+	const sql = 'select * from message where message_category ="公司公告" AND message_status = 0'
 	db.query(sql, (err, result) => {
 		if (err) return res.cc(err)
 		res.send({
@@ -297,7 +297,7 @@ exports.getCompanyMessageLength = (req, res) => {
 
 // 获取系统消息总数
 exports.getSystemMessageLength = (req, res) => {
-	const sql = 'select * from message where message_category ="系统消息"'
+	const sql = 'select * from message where message_category ="系统消息" AND message_status = 0'
 	db.query(sql, (err, result) => {
 		if (err) return res.cc(err)
 		res.send({
