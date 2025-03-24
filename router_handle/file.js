@@ -138,16 +138,17 @@ exports.searchFile = (req, res) => {
 
 // 删除文件 id file_name
 exports.deleteFile = (req, res) => {
-	const sql = `delete from files where id = ? `
+	const sql = 'delete from files where id = ? '
+	// 查询文件是否存在数据库
 	db.query(sql, req.body.id, (err, result) => {
+		if (err) return res.cc(err)
 		// 使用fsd unlink对文件进行删除
 		fs.unlink(`./public/upload/${req.body.file_name}`,(err)=>{
 			if (err) return res.cc(err)
-		})
-		if (err) return res.cc(err)
-		res.send({
-			status: 0,
-			message: '删除成功'
+			res.send({
+				status: 0,
+				message: '删除成功'
+			})
 		})
 	})
 }

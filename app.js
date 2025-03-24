@@ -64,6 +64,10 @@ const messageRouter = require('./router/message.js')
 app.use('/msg',messageRouter)
 const fileRouter = require('./router/file.js')
 app.use('/file',fileRouter)
+const operationLogRouter = require('./router/file.js')
+app.use('/olog',operationLogRouter)
+const loginLogRouter = require('./router/file.js')
+app.use('/llog',loginLogRouter)
 
 //对不符合joi规则的情况报错
 app.use((err,req,res,next)=>{
