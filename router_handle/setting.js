@@ -120,3 +120,24 @@ exports.getDepartment = (req, res) => {
 		res.send(result[0].set_value)
 	})
 }
+
+// 产品类别设置
+exports.setProduct = (req, res) => {
+	const sql = 'update setting set set_value = ? where set_name = "产品设置"'
+	db.query(sql, req.body.set_value, (err, result) => {
+		if (err) return res.cc(err)
+		res.send({
+			status: 0,
+			message: '产品类别设置成功！'
+		})
+	})
+}
+
+// 获取产品类别
+exports.getProduct = (req, res) => {
+	const sql = 'select set_value from setting where set_name = "产品设置"'
+	db.query(sql, (err, result) => {
+		if (err) return res.cc(err)
+		res.send(result[0].set_value)
+	})
+}

@@ -29,7 +29,7 @@ const db = require('../db/index')
  * audit_memo 出库/审核备注 varchar
  * 
  */
-// memory就是备忘录的意思
+
 
 // 产品入库 创建产品
 exports.createProduct = (req, res) => {
