@@ -20,6 +20,7 @@ exports.loginLog = (req,res) =>{
 		if (err) return res.cc(err)
 		res.send({
 			status:0,
+			message:'登录日志添加成功'
 		})
 	})
 }
