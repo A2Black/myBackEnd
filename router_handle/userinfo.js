@@ -259,35 +259,58 @@ exports.getAdminList = (req,res) => {
 }
 
 // 编辑管理员账号信息
-exports.editAdminInfo = (req,res) => {
-	// 需要从前端传进来的参数
+exports.editAdminInfo = (req, res) => {
 	const {
 		id,
 		name,
 		sex,
 		email,
 		department
-	} = req.body 
-	// 更新时间
+	} = req.body
 	const date = new Date()
-	// 更新的内容
-	const updateContent = {
-		id,
-		name,
-		sex,
-		email,
-		department,
-		// 数值是date
-		update_time:date,
-	}
-	const sql = 'update users set ? where id = ?'
-	db.query(sql,[updateContent,updateContent.id],(err,result)=>{
-		if(err) return res.cc(err);
-		res.send({
-			status:0,
-			message:"修改管理员信息成功！"
-		})
+	const sql0 = 'select department from users where id = ?'
+	db.query(sql0, id, (err, result) => {
+		if (result[0].department == department) {
+			// 修改的内容
+			const updateContent = {
+				id,
+				name,
+				sex,
+				email,
+				department,
+				update_time: date,
+			}
+			const sql = 'update users set ? where id = ?'
+			db.query(sql, [updateContent, updateContent.id], (err, result) => {
+				if (err) return res.cc(err)
+				res.send({
+					status: 0,
+					message: '修改管理员信息成功'
+				})
+			})
+		} else {
+			// 修改的内容
+			const updateContent = {
+				id,
+				name,
+				sex,
+				email,
+				department,
+				update_time: date,
+				read_list: null,
+				read_status: 0
+			}
+			const sql = 'update users set ? where id = ?'
+			db.query(sql, [updateContent, updateContent.id], (err, result) => {
+				if (err) return res.cc(err)
+				res.send({
+					status: 0,
+					message: '修改管理员信息成功'
+				})
+			})
+		}
 	})
+
 }
 
 // 对管理员取消赋权  降级成为普通用户 参数id

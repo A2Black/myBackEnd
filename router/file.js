@@ -25,4 +25,6 @@ router.post('/returnFilesListData', fileHandler.returnFilesListData)
 router.post('/searchFile', fileHandler.searchFile)
 // 删除文件
 router.post('/deleteFile', fileHandler.deleteFile)
+
+// 导出路由
 module.exports = router

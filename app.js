@@ -68,9 +68,10 @@ const operationLogRouter = require('./router/operation_log.js')
 app.use('/olog',operationLogRouter)
 const loginLogRouter = require('./router/login_log.js')
 app.use('/llog',loginLogRouter)
-app.use('/olog',operationLogRouter)
 const overviewRouter = require('./router/overview.js')
 app.use('/overview',overviewRouter)
+const departmentMsgRouter = require('./router/department_msg.js')
+app.use('/dmsg',departmentMsgRouter)
 
 
 //对不符合joi规则的情况报错

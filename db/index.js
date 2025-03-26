@@ -9,5 +9,5 @@ const db = mysql.createPool({
     database: 'back_system'
 })
 
-// 对外暴露数据库
+// 对外暴露数据库操作模块
 module.exports = db

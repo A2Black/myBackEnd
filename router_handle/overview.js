@@ -138,17 +138,21 @@ exports.getDayAndNumber = (req,res) =>{
 		// 定义一个数组用来存放最近七天的日期
 		let week = []
 		for(let i = 0;i<7;i++){
-			// day.getDate() 返回当前日期 比如今天是 2025年3月26日 会返回 2025年3月26日 -1为了统计前七天的数据,今天不计算在内
-			day.setDate(day.getDate() - 1)
-			// 2023/9/23 → 2023-9-23 2023-09-23 
-			// moment.js
+			// day.getDate() 返回当前日期 比如今天是 2025年3月26日 会返回 2025年3月26日 统计前七天的数据,包括今天在内
+			if(i>0){
+				day.setDate(day.getDate()-1)
+			}
+			// 正则转换2025/3/25 → 2025-3-25
+			// moment.js  补齐格式2025-03-25   方便利用模糊搜索，与数据库中的日期格式一致
 			week.push(moment(day.toLocaleDateString().replace(/\//g,'-'),'YYYY-MM-DD').format('YYYY-MM-DD'))
 		}
+		week.reverse()
 		return week
 	}
 	// 获取每天登录的人数
 	const getNumber = login_time =>{
 		return new Promise(resolve=>{
+			// 使用模糊搜索获取每天登陆的人数
 			const sql = `select * from login_log where login_time like '%${login_time}%'`
 			db.query(sql,login_time,(err,result)=>{
 				resolve(result.length)
@@ -157,8 +161,11 @@ exports.getDayAndNumber = (req,res) =>{
 	}
 	
 	async function getAll(){
+		// 第一步，获取最近七天的日期
 		let week = getDay()
+		// 第二步，获取每天登录的人数
 		let number = []
+		// 将每天登录的人数存入数组
 		for(let i = 0;i<week.length;i++){
 			number[i] = await getNumber(week[i])
 		}
