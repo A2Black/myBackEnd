@@ -56,7 +56,7 @@ exports.clickDelete = (req, res) => {
 	const sql = 'select read_list from users where id = ?'
 	db.query(sql, req.body.id, (err, result) => {
 		if (err) return res.cc(err)
-		// 第一步 需要把我们获取到的read_list 变成 JSON对象 
+		// 第一步 需要把获取到的read_list 变成 JSON对象 
 		// 第二步 对这个read_list进行一个过滤
 		// 第三步 使用JSON.stringify 变回原样 同时，update 这个用户的 read_list
 		list = JSON.stringify(JSON.parse(result[0].read_list).filter(item => item != req.body.readId))
