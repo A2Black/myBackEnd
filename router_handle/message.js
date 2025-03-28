@@ -55,8 +55,8 @@ exports.publishMessage = (req, res) => {
 // 获取公司公告列表
 exports.companyMessageList = (req, res) => {
 	const sql =
-		'select * from message where message_category = "公司公告" and message_status = "0" order by message_publish_time DESC limit 5'
-	db.query(sql, (err, result) => {
+		'select * from message where message_category = "公司公告" and message_status = "0" and message_receipt_object = ? order by message_publish_time DESC limit 3'
+	db.query(sql, req.body.department, (err, result) => {
 		if (err) return res.cc(err)
 		res.send(result)
 	})
@@ -87,6 +87,7 @@ exports.editMessage = (req, res) => {
 		return new Promise(resolve=>{
 			const sql = 'select message_receipt_object from message where id = ?'
 			db.query(sql,id,(err,result)=>{
+				// 返回之前的部门
 				resolve(result[0].message_receipt_object)
 			})
 		})

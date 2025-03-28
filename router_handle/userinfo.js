@@ -125,7 +125,7 @@ exports.changePassword = (req,res)=>{
 		//bcrypt 使用这个中间件的比较方法
 		const compareResult = bcrypt.compareSync(req.body.oldPassword,result[0].password);
 		if(!compareResult){
-			res.send({
+			return res.send({
 				status:1,
 				message:"旧密码错误"
 			})
@@ -341,8 +341,8 @@ exports.changeUserToAdmin = (req,res) => {
 
 // 通过账号对用户进行搜索  参数为account
 exports.searchUser = (req,res) => {
-	const sql = 'select * from users where account = ?'
-	db.query(sql,req.body.account,(err,result)=>{
+	const sql = 'select * from users where account = ? and identity = ?'
+	db.query(sql,[req.body.account, req.body.identity],(err,result)=>{
 		if(err) return res.cc(err);
 		result.forEach((e)=>{
 			e.password = '',
